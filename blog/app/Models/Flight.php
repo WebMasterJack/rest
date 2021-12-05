@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Airport;
+use App\Models\Bookings;
 class Flight extends Model
 {
     protected $table='flights';
@@ -18,4 +19,6 @@ class Flight extends Model
     {
         return $this->belongsTo(Airport::class,'to_id','id');
     }
+
+  
 }

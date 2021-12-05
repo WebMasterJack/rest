@@ -21,3 +21,4 @@ Route::post('/register','App\Http\Controllers\AirUserController@register');
 Route::post('/login','App\Http\Controllers\AirUserController@login');
 Route::get('/flight','App\Http\Controllers\FlightController@index');
 Route::get('/airport','App\Http\Controllers\AirportController@index');
+Route::post('/bookings','App\Http\Controllers\BookingsController@index');

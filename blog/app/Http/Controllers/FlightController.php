@@ -43,17 +43,16 @@ class FlightController extends Controller
             "flights_to"=>FlightCollection::collection($noobes_from),
             "flights_back"=>FlightCollection::collection($noobes_to),
         ];
-     
         return response($data,200)->header('Content-Type', 'application/json');
 
 
     }
-    public function getNoobes($from ,$to)
+    public function getNoobes($from,$to)
     {
         $noobes=Flight::whereHas('from', function($q) use($from){
-            $q->where('iata', $from);
+            return $q->where('iata', $from);
         })->whereHas('to', function($q) use($to){
-            $q->where('iata', $to);
+            return $q->where('iata', $to);
         });
 
         return $noobes->get();
