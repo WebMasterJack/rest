@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Bookings;
+use App\Models\Flight;
+use App\Models\Passengers;
 use Validator;
 use Str;
 use App\Http\Resources\FlightCollection;
+use App\Http\Resources\PassengersCollection;
 class BookingsController extends Controller
 {
 
@@ -62,30 +65,43 @@ class BookingsController extends Controller
 
     public function code(Request $request)
     {
-        $to=$request->input('to');
-        $back=$request->input('back');
-        $flights_to=getFlights($to);
-        $flights_back=getFlights($back);
+        $findBook=Bookings::where('code',$request->code)->first();
+        $to=$findBook->flight_from;
+        $back=$findBook->flight_back;
+  
+        $flights_to=Flight::where('id',$to)->get();
+        $flights_back=Flight::where('id',$back)->get();
+
+        $passengers=Passengers::where('booking_id',$findBook->id)->get();
+        $cost=$flights_to->sum('cost')+$flights_back->sum('cost');
+        $count=$passengers->count();
+
+        $request->date1=$findBook->date_from;
+        $request->date2=$findBook->date_back;
+        
         $data=[
            "date"=>[
                "code"=>$request->code,
-               "cost"=>5000,
-               "flights"=[
+               "cost"=>$cost*$count,
+               "flights"=>[
                 "flights_to"=>FlightCollection::collection($flights_to),
                 "flights_back"=>FlightCollection::collection($flights_back),
                ],
+               "passengers"=>[
+                   PassengersCollection::collection($passengers),
+               ]
             ]
         ];
         
-    
+        return response($data,201)->header('Content-Type', 'application/json');
 
     }
     public function getFlights($to,$back)
     {
-        $flight=Bookings::whereHas('to', function($q) use($to){
-            return $q->where('code', $to);
-        })->whereHas('back', function($q) use($back){
-            return $q->where('code', $back);
+        $flights=Bookings::whereHas('codeFrom', function($q) use($to){
+            return $q->where('id', $to);
+        })->whereHas('codeTo', function($q) use($back){
+            return $q->where('id', $back);
         });
 
         return $flights->get();

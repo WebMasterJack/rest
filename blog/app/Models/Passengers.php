@@ -9,5 +9,9 @@ class Passengers extends Model
 {
   protected $table='passengers';
   protected $fillable=['id','booking_id','first_name','last_name','birth_date','document_number','place_from','place_back','created_at','updated_at'];
-  
+ 
+  public function passenger()
+    {
+        return $this->belongsTo(Bookings::class,'booking_id','id');
+    }
 }

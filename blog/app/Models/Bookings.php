@@ -13,10 +13,10 @@ class Bookings extends Model
 
     public function codeFrom()
     {
-        return $this->belongsTo(Flight::class,'from_id','id');
+        return $this->belongsTo(Flight::class,'flight_from','from_id');
     }
     public function codeTo()
     {
-        return $this->belongsTo(Flight::class,'from_id','id');
+        return $this->belongsTo(Flight::class,'flight_back','from_id');
     }
 }
